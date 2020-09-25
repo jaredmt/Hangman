@@ -3,6 +3,7 @@
 
 body{
     margin:0;
+    
 }
 
 .header-bg{
@@ -46,15 +47,23 @@ header h1{
     display: grid;
     /*border: 5px solid #ddd;*/
     margin:5px auto;
-    max-width:1000px;
+    /*max-width:1000px;*/
     padding:10px;
     align-items: center;
     justify-content: center;
     
+    background: url('/img/vintage.jpg') no-repeat;
+    background-size: cover;
+    box-shadow: inset 2px 4px 8px #fff, inset -2px -2px 8px #fff;
+    border-radius: 8px;
+    /*clip-path: polygon(0% 0%, 0% 100%, 100% 100%, 100% 10%, 95% 0% );/*cham top right*/
+    opacity: 90%;
 }
 
 .game-container{
+    background: rgba(255,255,255,0.8);
     display: grid;
+    max-width: 1000px;
     
     grid-template-columns: repeat(3,1fr);
     grid-template-rows: repeat(2,1fr);
@@ -74,6 +83,7 @@ header h1{
     border: 2px dotted black;/*temporary*/
     grid-column: 1/3;
     grid-row: 2/3;
+    
 }
 
 .letters{
@@ -104,6 +114,10 @@ header h1{
     text-shadow: -1px -2px 2px #222;
 }
 
+.letter:hover{
+    cursor: default;
+}
+
 .letter-pressed{
     box-shadow: inset 1px 2px 1px rgb(0,0,100), inset -1px -2px 2px #eee;
     /*background: green;*/
@@ -131,6 +145,7 @@ header h1{
     display: grid;/*will place hang man above*/
 
     border: 2px dotted black;/*temporary*/
+    
 }
 .gameboard-sentence{
     /*how to organize each word*/
@@ -138,6 +153,7 @@ header h1{
     flex-flow: wrap;
     justify-content: center;
     margin-top: 10px;
+    font-size: 25px;
 
 }
 .gameboard-word{
@@ -151,11 +167,17 @@ header h1{
     text-align: center;
     float: left;
     margin:2px;
-    font-size: 25px;
+    
+}
+.gameboard-letter-unknown{
+    color: rgba(0,0,0,0);/*invisible text*/
 }
 
 .gameboard-nonletter{
-    width: 25px;
+    width: 15px;
+    text-align: center;
+    float: left;
+    margin: 2px;
 }
 
 
