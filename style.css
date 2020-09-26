@@ -61,7 +61,7 @@ header h1{
 }
 
 .game-container{
-    background: rgba(255,255,255,0.8);
+    background: rgba(255,255,255,0.7);
     display: grid;
     max-width: 1000px;
     

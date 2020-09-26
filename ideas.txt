@@ -14,3 +14,12 @@ https://codepen.io/cguillou/pen/ubvFn
 the letters that you guess will each be within a block. that block will have a border on the bottom and a small left-right margin
 you can switch between 2 options: click each letter individually or switch to typing to a "console"
 -use flex box to display each letter to pick
+
+other features to add:
+-new game button
+-category selection box
+-difficulty bar setting
+--mostly difficulty will permet lesser known sentences
+--the super easy will only be top 100 and 7 tries
+-hangman display
+-icon (title)
