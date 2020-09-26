@@ -4,6 +4,29 @@ var maxWrongGuesses = 7;
 
 //===========functions============
 
+
+//***general functions */
+String.prototype.leftJustify = function( length, char ) {
+    var fill = [];
+    while ( fill.length + this.length < length ) {
+      fill[fill.length] = char || " ";
+    }
+    return fill.join('') + this;
+}
+
+String.prototype.rightJustify = function( length, char ) {
+    var fill = [];
+    while ( fill.length + this.length < length ) {
+      fill[fill.length] = char;
+    }
+    return this + fill.join('');
+}
+
+
+
+//**********game functions***************** */
+
+
 //clear the game
 async function clearGame(){
     document.querySelector('.letters').innerHTML='';
@@ -31,18 +54,19 @@ async function setGame(){
     if (!categoriesEl.querySelector('option')){
         categories.forEach(cat=>{
             let option = document.createElement('option');
-            option.innerText=cat;
+            option.innerText= decodeURI( cat.leftJustify(20).replaceAll(" ", "%C2%A0"));//center text
             categoriesEl.append(option);
         });
         //document.querySelector('#categories').append("random");//add random option later
     }
     
     //get selected category
-    const category = categoriesEl.options[categoriesEl.selectedIndex].text;
+    const category = categoriesEl.options[categoriesEl.selectedIndex].text.trim();
 
     //populate difficulties
     const difficulties = document.querySelector('#difficulty');
-    const difficultyOptions=["I refuse to try","challenging","I live dangerously"];
+    const difficultyOptions=["I refuse to try","challenging","I live dangerously"]
+    .map(d=>decodeURI( d.leftJustify(20).replaceAll(" ", "%C2%A0")));//center text
     if (!difficulties.querySelector('option')){
         difficultyOptions.forEach(diff=>{
             let difficulty = document.createElement('option');
@@ -63,7 +87,6 @@ async function setGame(){
     may choose items from the back of the list.
     */
     const cati = Math.floor(Math.random()*(.2+0.8*difficulty/(difficultyOptions.length-1))*gameData[category].length );
-    
 
     //choose sentence
     const sentence = gameData[category][cati];//for now
