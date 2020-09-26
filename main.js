@@ -1,9 +1,14 @@
 
-const maxWrongGuesses = 6;
+var maxWrongGuesses = 7;
 
 
+//===========functions============
 
-
+//clear the game
+async function clearGame(){
+    document.querySelector('.letters').innerHTML='';
+    document.querySelector('.gameboard-sentence').innerHTML='';
+}
 
 
 //sets up the game
@@ -21,19 +26,51 @@ async function setGame(){
         letters.append(newletter);
     }
 
-    //choose category
-    const category = categories[0];//for now
+    //populate categories if not populated yet
+    const categoriesEl = document.querySelector('#categories');
+    if (!categoriesEl.querySelector('option')){
+        categories.forEach(cat=>{
+            let option = document.createElement('option');
+            option.innerText=cat;
+            categoriesEl.append(option);
+        });
+        //document.querySelector('#categories').append("random");//add random option later
+    }
+    
+    //get selected category
+    const category = categoriesEl.options[categoriesEl.selectedIndex].text;
+
+    //populate difficulties
+    const difficulties = document.querySelector('#difficulty');
+    const difficultyOptions=["I refuse to try","challenging","I live dangerously"];
+    if (!difficulties.querySelector('option')){
+        difficultyOptions.forEach(diff=>{
+            let difficulty = document.createElement('option');
+            difficulty.innerText=diff;
+            difficulties.append(difficulty);
+        });
+    }
+    
+    //get difficulty index
+    const difficulty = difficultyOptions.indexOf( difficulties.options[difficulties.selectedIndex].text);
+    maxWrongGuesses-=difficulty;//less guesses for higher difficulty
+
 
     //choose category index at random
-    //const cati = Math.floor(Math.random()*gameData[category].length);
-    const cati = Math.floor(Math.random()*100);
+    /* 
+    the first items on the list are generally easier to guess.
+    the easier difficulties will choose one of the first items and the harder difficulties
+    may choose items from the back of the list.
+    */
+    const cati = Math.floor(Math.random()*(.2+0.8*difficulty/(difficultyOptions.length-1))*gameData[category].length );
+    
 
     //choose sentence
     const sentence = gameData[category][cati];//for now
     /*const sentence = `here is a: sentence-words/symbols`;/* testing phrases that contain symbols*/
     //console.log(sentence);//gives answer away
     localStorage.setItem('sessionInfo',JSON.stringify({
-        'category':0,
+        'category':categories.indexOf(category),
         'sentence':cati,
         'wrongGuesses':0
     }));//save the phrase of this current session to local storage
@@ -72,6 +109,14 @@ async function setGame(){
     sentenceEl.removeChild(space);//no space at the end of the sentence
     
     
+
+    //add events to all the letters to choose from
+    await document.querySelectorAll('.letter').forEach(L=>{
+        
+        L.addEventListener('click',async eL=>{
+            await checkLetter(eL);
+        });
+    });
 }
 
 
@@ -99,8 +144,8 @@ async function checkLetter(e){
     const letterGuessed = e.target.innerText;
     
     //console.log(`guessed: ${letterGuessed}, correct: ${sentence}`);
-    const lettersEl = document.querySelectorAll('.gameboard-letter');
-    //console.log(Array.from(lettersEl).map(x=>x.innerText));//all current letters
+    const lettersEl = await document.querySelectorAll('.gameboard-letter');
+    //console.log(lettersEl);
     var guessedCorrect = false;
     const sentenceAnswer = [...sentence.matchAll('[A-Z]')].map(x=>x[0]);
 
@@ -145,19 +190,32 @@ async function checkLetter(e){
 }
 
 
+async function newGame(){
+    await clearGame();
+    await setGame();
+}
 
 
-//add all event listeners
+
+
+
+
+
+//=======add all event listeners=========
 document.addEventListener('DOMContentLoaded',async e=>{
     await setGame();//setGame();//start game immediately
 
-
-    //add events to all the letters to choose from
-    await document.querySelectorAll('.letter').forEach(L=>{
-        
-        L.addEventListener('click',async eL=>{
-            await checkLetter(eL);
-        });
-    });
-
+    
 });
+
+document.querySelector('.btn').addEventListener('click',async e=>{
+    await newGame();
+});
+
+document.querySelector('#categories').addEventListener('change',async e=>{
+    await newGame();
+})
+
+document.querySelector('#difficulty').addEventListener('change',async e=>{
+    await newGame();
+})

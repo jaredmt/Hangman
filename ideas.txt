@@ -16,10 +16,9 @@ you can switch between 2 options: click each letter individually or switch to ty
 -use flex box to display each letter to pick
 
 other features to add:
--new game button
--category selection box
--difficulty bar setting
---mostly difficulty will permet lesser known sentences
---the super easy will only be top 100 and 7 tries
+
 -hangman display
 -icon (title)
+-during current session: don't reuse the same names. keep popping names out of the list until it is empty
+-selections: add spaces to center text
+
