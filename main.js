@@ -61,7 +61,11 @@ async function setGame(){
     }
     
     //get selected category
-    const category = categoriesEl.options[categoriesEl.selectedIndex].text.trim();
+    const category = categoriesEl.options[categoriesEl.selectedIndex].text.trim()
+    .replaceAll(String.fromCharCode(160)," ");//note below:
+    /*special character was used to center text with space that HTML recognizes.
+    need to replace spcial white space with standard space char
+    */
 
     //populate difficulties
     const difficulties = document.querySelector('#difficulty');
@@ -216,6 +220,9 @@ async function checkLetter(e){
 async function newGame(){
     await clearGame();
     await setGame();
+
+    //scroll to game container
+    document.querySelector('.game-container').scrollIntoView();
 }
 
 

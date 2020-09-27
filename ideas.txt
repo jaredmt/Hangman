@@ -20,5 +20,7 @@ other features to add:
 -hangman display
 -icon (title)
 -during current session: don't reuse the same names. keep popping names out of the list until it is empty
--selections: add spaces to center text
+-rewrite code to be more readable
+--use consistent variable names. ending in EL for all elements
+--use id instead of class in appropriate places
 
