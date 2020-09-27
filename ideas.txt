@@ -23,4 +23,6 @@ other features to add:
 -rewrite code to be more readable
 --use consistent variable names. ending in EL for all elements
 --use id instead of class in appropriate places
+-above letters: add a down arrow. this will toggle to a console (instead of clicking letters)
+--the letters box will collapse and console will open
 
