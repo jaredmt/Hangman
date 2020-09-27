@@ -176,6 +176,11 @@ async function checkLetter(e){
     var guessedCorrect = false;
     const sentenceAnswer = [...sentence.matchAll('[A-Z]')].map(x=>x[0]);
 
+    if (!document.querySelector('.gameboard-letter-unknown')){
+        //game already ended and answer was found.
+        return;
+    }
+
     //cycle through each letter of known answer and currently displayed answer
     //check if it matches the guessed letter
     sentenceAnswer.forEach((letterAnswer,i)=>{
