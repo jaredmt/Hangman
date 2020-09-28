@@ -25,4 +25,4 @@ other features to add:
 -above letters: add a down arrow. this will toggle to a console (instead of clicking letters)
 --the letters box will collapse and console will open
 -add tooltips
--add keypress event listeners
+-find multiple animations for winning/loosing and choose at random

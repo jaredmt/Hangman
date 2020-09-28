@@ -104,7 +104,8 @@ async function setGame(){
     localStorage.setItem('sessionInfo',JSON.stringify({
         'category':categories.indexOf(category),
         'sentence':cati,
-        'wrongGuesses':0
+        'wrongGuesses':0,
+        'gameEnd':false
     }));//save the phrase of this current session to local storage
     const words = sentence.split(" ");
 
@@ -211,13 +212,15 @@ async function checkLetter(e){
 
         e.target.className='letter letter-wrong';
 
-        //check if max guesses reached
+        //check if user lost (max guesses reached)
         sessionInfo.wrongGuesses++;
         await localStorage.setItem('sessionInfo',JSON.stringify(sessionInfo));
         imgEl.src=img(sessionInfo.wrongGuesses+1);
         if (sessionInfo.wrongGuesses>=maxWrongGuesses){
             console.log('LOSER!!!!');
             await showLosingAnimation();
+            sessionInfo.gameEnd=true;
+            localStorage.setItem('sessionInfo',JSON.stringify(sessionInfo));
         }
     }
 
@@ -225,6 +228,8 @@ async function checkLetter(e){
     if (!document.querySelector('.gameboard-letter-unknown')){
         console.log('win!!!!');
         await showWinningAnimation();
+        sessionInfo.gameEnd=true;
+        localStorage.setItem('sessionInfo',JSON.stringify(sessionInfo));
     }
 
 
@@ -282,9 +287,10 @@ document.querySelector('#difficulty').addEventListener('change',async e=>{
     await newGame();
 });
 
-document.addEventListener('keypress',async e=>{
+document.addEventListener('keydown',async e=>{
+    //console.log(e.key);
     const letter = e.key.toUpperCase();
-    if(letter.match('[A-Z]')){
+    if(letter.length==1&&letter.match('[A-Z]')){
         //key pressed is a letter. submit this letter
         
         //find letter element
@@ -294,6 +300,12 @@ document.addEventListener('keypress',async e=>{
         //force event for this letter
         letterEl.dispatchEvent(new Event('click'));
 
+    }else if (e.key=="Enter"){//only make new game on enter if the has ended
+        if(JSON.parse(localStorage.getItem('sessionInfo')).gameEnd){
+            await newGame();
+        }
+    }else if (e.key=="Escape"){
+        await newGame();
     }
-    //console.log(letter.target.innerText);
+    
 });
