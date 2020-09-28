@@ -18,7 +18,6 @@ you can switch between 2 options: click each letter individually or switch to ty
 other features to add:
 
 -hangman display
--icon (title)
 -during current session: don't reuse the same names. keep popping names out of the list until it is empty
 -rewrite code to be more readable
 --use consistent variable names. ending in EL for all elements
@@ -26,3 +25,4 @@ other features to add:
 -above letters: add a down arrow. this will toggle to a console (instead of clicking letters)
 --the letters box will collapse and console will open
 -add tooltips
+-add keypress event listeners

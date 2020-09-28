@@ -174,7 +174,7 @@ async function checkLetter(e){
 
     
     //console.log(sentence);
-    const letterGuessed = e.target.innerText;
+    const letterGuessed = e.target.innerText||e;
     
     //console.log(`guessed: ${letterGuessed}, correct: ${sentence}`);
     const lettersEl = await document.querySelectorAll('.gameboard-letter');
@@ -276,8 +276,24 @@ document.querySelector('.btn').addEventListener('click',async e=>{
 
 document.querySelector('#categories').addEventListener('change',async e=>{
     await newGame();
-})
+});
 
 document.querySelector('#difficulty').addEventListener('change',async e=>{
     await newGame();
-})
+});
+
+document.addEventListener('keypress',async e=>{
+    const letter = e.key.toUpperCase();
+    if(letter.match('[A-Z]')){
+        //key pressed is a letter. submit this letter
+        
+        //find letter element
+        const letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const letterEl = document.querySelectorAll('.letter')[letters.indexOf(letter)];
+
+        //force event for this letter
+        letterEl.dispatchEvent(new Event('click'));
+
+    }
+    //console.log(letter.target.innerText);
+});

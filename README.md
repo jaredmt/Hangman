@@ -5,7 +5,7 @@ This game runs on pure HTML/CSS/Javascript. It is just a fun and simple game of 
 The data used in this game was extracted from various websites using puppeteer via nodeJS. 
 
 ## Live Demo
-The live demo will be available soon
+The live demo will be available soon on github
 
 ## Run game locally
 To run locally after cloning this project, set up a server. Otherwise the game cannot fetch the data.
