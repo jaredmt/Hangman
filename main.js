@@ -1,5 +1,10 @@
 
+const maxWrongGuessesStart=7;//starting number. goes down for higher difficulty;
 var maxWrongGuesses = 7;
+const imgEl = document.querySelector('img.output');
+var img =num=>{
+    return `/img/hangmanset3_${num}.png`
+}
 
 
 //===========functions============
@@ -81,7 +86,7 @@ async function setGame(){
     
     //get difficulty index
     const difficulty = difficultyOptions.indexOf( difficulties.options[difficulties.selectedIndex].text);
-    maxWrongGuesses-=difficulty;//less guesses for higher difficulty
+    maxWrongGuesses=maxWrongGuessesStart-difficulty;//less guesses for higher difficulty
 
 
     //choose category index at random
@@ -135,6 +140,7 @@ async function setGame(){
     }
     sentenceEl.removeChild(space);//no space at the end of the sentence
     
+    imgEl.src=img(1);
     
 
     //add events to all the letters to choose from
@@ -208,14 +214,17 @@ async function checkLetter(e){
         //check if max guesses reached
         sessionInfo.wrongGuesses++;
         await localStorage.setItem('sessionInfo',JSON.stringify(sessionInfo));
+        imgEl.src=img(sessionInfo.wrongGuesses+1);
         if (sessionInfo.wrongGuesses>=maxWrongGuesses){
             console.log('LOSER!!!!');
+            await showLosingAnimation();
         }
     }
 
     //check if user won
     if (!document.querySelector('.gameboard-letter-unknown')){
         console.log('win!!!!');
+        await showWinningAnimation();
     }
 
 
@@ -231,7 +240,25 @@ async function newGame(){
 }
 
 
+async function showLosingAnimation(t){
+    t=t||2000;
+    img.src=img(8);
+    await setTimeout(()=>{
+        imgEl.src='img/KennyDies.gif';
+    },t);
+    
+}
 
+
+async function showWinningAnimation(t){
+    t=t||2000;
+
+    imgEl.src='img/fireworks.gif';
+    await setTimeout(()=>{
+        imgEl.src='img/KennyDancing.gif';
+    },t);
+    
+}
 
 
 

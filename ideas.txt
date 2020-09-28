@@ -25,4 +25,4 @@ other features to add:
 --use id instead of class in appropriate places
 -above letters: add a down arrow. this will toggle to a console (instead of clicking letters)
 --the letters box will collapse and console will open
-
+-add tooltips
