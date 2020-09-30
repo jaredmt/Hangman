@@ -3,7 +3,7 @@ const maxWrongGuessesStart=7;//starting number. goes down for higher difficulty;
 var maxWrongGuesses = 7;//initialize. will update later
 const imgEl = document.querySelector('img.output');
 var img =num=>{
-    return `/img/hangmanset2_${num}.png`
+    return `img/hangmanset2_${num}.png`
 }
 
 
