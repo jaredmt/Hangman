@@ -53,7 +53,7 @@ header h1{
     align-items: center;
     justify-content: center;
     
-    background: url('/img/vintage.jpg') no-repeat;
+    background: url('img/vintage.jpg') no-repeat;
     background-size: cover;
     box-shadow: inset 2px 4px 8px #fff, inset -2px -2px 8px #fff;
     border-radius: 8px;
