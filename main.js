@@ -1,9 +1,9 @@
 
 const maxWrongGuessesStart=7;//starting number. goes down for higher difficulty;
-var maxWrongGuesses = 7;
+var maxWrongGuesses = 7;//initialize. will update later
 const imgEl = document.querySelector('img.output');
 var img =num=>{
-    return `/img/hangmanset3_${num}.png`
+    return `/img/hangmanset2_${num}.png`
 }
 
 
@@ -34,12 +34,20 @@ String.prototype.rightJustify = function( length, char ) {
 
 //clear the game
 async function clearGame(){
+    //reset letters and sentence. these will be reinserted when the next game starts
     document.querySelector('.letters').innerHTML='';
     document.querySelector('.gameboard-sentence').innerHTML='';
 }
 
 
-//sets up the game
+/**sets up the game
+ * general steps:
+ * -fetches data for the category selected and picks a "sentence" at random
+ * -sets the max number of tries based on difficulty selected
+ * -sets up all letter buttons and the gameboard (blank letters to start with)
+ * 
+ * run this function once after DOM loaded. then run the newGame() method after
+ * */
 async function setGame(){
     const gameData = await (await fetch('./categories/gameData.JSON')).json();
     const categories = Object.keys(gameData);
@@ -145,6 +153,7 @@ async function setGame(){
     
 
     //add events to all the letters to choose from
+    //this will make sure the letter can be checked for correctness
     await document.querySelectorAll('.letter').forEach(L=>{
         
         L.addEventListener('click',async eL=>{
@@ -159,44 +168,51 @@ async function setGame(){
 
 
 
-//game started. user clicked a letter
+/**game started. user clicked a letter
+ * 
+ * */
 async function checkLetter(e){
-    //get game data
+    //get game data including the sentence
+    /*note that the actual sentence is not stored in localStorage, only
+    the index. Just to make it require more effort to cheat*/
     const sessionInfo=await JSON.parse(localStorage.getItem('sessionInfo'));
     const gameData = await (await fetch('./categories/gameData.JSON')).json();
     const categories = Object.keys(gameData);
     const category=categories[sessionInfo.category];
     const sentence = gameData[category][sessionInfo.sentence].toUpperCase();
 
+
+    // check if game is already over
     if (sessionInfo.wrongGuesses>=maxWrongGuesses){
-        //current game is over
+        //current game is over. user lost
         return;
-    }
-
-    
-    //console.log(sentence);
-    const letterGuessed = e.target.innerText||e;
-    
-    //console.log(`guessed: ${letterGuessed}, correct: ${sentence}`);
-    const lettersEl = await document.querySelectorAll('.gameboard-letter');
-    //console.log(lettersEl);
-    var guessedCorrect = false;
-    const sentenceAnswer = [...sentence.matchAll('[A-Z]')].map(x=>x[0]);
-
-    if (!document.querySelector('.gameboard-letter-unknown')){
+    }else if (!document.querySelector('.gameboard-letter-unknown')){
         //game already ended and answer was found.
         return;
     }
 
+    
+    //letter guessed by user
+    const letterGuessed = e.target.innerText;
+    
+    
+    const lettersEl = await document.querySelectorAll('.gameboard-letter');
+    var guessedCorrect = false;//assume user guessed wrong unless it matches the answer
+    //get only the letters of the actual answer (as an array)
+    const sentenceAnswer = [...sentence.matchAll('[A-Z]')].map(x=>x[0]);
+
+    
+
     //cycle through each letter of known answer and currently displayed answer
     //check if it matches the guessed letter
     sentenceAnswer.forEach((letterAnswer,i)=>{
-        //console.log(letterAnswer);
         if (letterAnswer==letterGuessed){
+            //the guessed letter matched a letter in the answer
+
             lettersEl[i].innerText=letterAnswer;//display correct answer
-            lettersEl[i].className='gameboard-letter';
-            e.target.className='letter letter-pressed';
-            guessedCorrect=true;
+            lettersEl[i].className='gameboard-letter';//eliminate "unknown" class
+            e.target.className='letter letter-pressed';//highlight letter to show it was already used
+            guessedCorrect=true;//update to show user guessed correct
         }
 
     });
@@ -204,19 +220,23 @@ async function checkLetter(e){
     //if no correct letter found, then mark as wrong
     if (!guessedCorrect){
 
+        //first check if this letter had already been guessed previously
         if (e.target.className.indexOf('letter-wrong')>=0){
             //already wrongfully guessed this. no action needed
             return;
         }
 
 
+        //mark the letter as wrong
         e.target.className='letter letter-wrong';
 
-        //check if user lost (max guesses reached)
+        //check if user lost the game (max guesses reached)
         sessionInfo.wrongGuesses++;
         await localStorage.setItem('sessionInfo',JSON.stringify(sessionInfo));
-        imgEl.src=img(sessionInfo.wrongGuesses+1);
+        imgEl.src=img(sessionInfo.wrongGuesses+1);//update output image
         if (sessionInfo.wrongGuesses>=maxWrongGuesses){
+            //user has lost the game
+            //show losing animation in output and set gameEnd to true
             console.log('LOSER!!!!');
             await showLosingAnimation();
             sessionInfo.gameEnd=true;
@@ -224,8 +244,11 @@ async function checkLetter(e){
         }
     }
 
-    //check if user won
+
+    //check if user won the game
     if (!document.querySelector('.gameboard-letter-unknown')){
+        //no unknown letters. user won the game.
+        //show winning animation in output and set gameEnd to true
         console.log('win!!!!');
         await showWinningAnimation();
         sessionInfo.gameEnd=true;
@@ -235,7 +258,8 @@ async function checkLetter(e){
 
 }
 
-
+//run this function each time the user click "new game" button
+//it will clear the current game and set up the next
 async function newGame(){
     await clearGame();
     await setGame();
@@ -244,24 +268,33 @@ async function newGame(){
     document.querySelector('.game-container').scrollIntoView();
 }
 
-
-async function showLosingAnimation(t){
-    t=t||2000;
+//display a losing animation in the output after the user has lost
+async function showLosingAnimation(t=2000){
     img.src=img(8);
     await setTimeout(()=>{
-        imgEl.src='img/KennyDies.gif';
+        i=Math.ceil(Math.random()*7);
+        imgEl.src=`img/Lose${i}.gif`;
     },t);
+
+    await setTimeout(()=>{
+        imgEl.src=img(8);
+    },3*t);
     
 }
 
 
-async function showWinningAnimation(t){
-    t=t||2000;
+//display winning animation in the output after user has won
+async function showWinningAnimation(t=2000){
 
     imgEl.src='img/fireworks.gif';
     await setTimeout(()=>{
-        imgEl.src='img/KennyDancing.gif';
+        i=Math.ceil(Math.random()*4);
+        imgEl.src=`img/Win${i}.gif`;
     },t);
+
+    await setTimeout(()=>{
+        imgEl.src='img/fireworks.gif';
+    },3*t);
     
 }
 
@@ -270,9 +303,7 @@ async function showWinningAnimation(t){
 
 //=======add all event listeners=========
 document.addEventListener('DOMContentLoaded',async e=>{
-    await setGame();//setGame();//start game immediately
-
-    
+    await setGame();
 });
 
 document.querySelector('.btn').addEventListener('click',async e=>{
@@ -287,24 +318,24 @@ document.querySelector('#difficulty').addEventListener('change',async e=>{
     await newGame();
 });
 
+//allow user to also interact with the game via the keyboard
 document.addEventListener('keydown',async e=>{
-    //console.log(e.key);
     const letter = e.key.toUpperCase();
     if(letter.length==1&&letter.match('[A-Z]')){
         //key pressed is a letter. submit this letter
         
-        //find letter element
+        //find letter element in HTML file
         const letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         const letterEl = document.querySelectorAll('.letter')[letters.indexOf(letter)];
 
-        //force event for this letter
+        //force event for this letter element
         letterEl.dispatchEvent(new Event('click'));
 
-    }else if (e.key=="Enter"){//only make new game on enter if the has ended
+    }else if (e.key=="Enter"){//only make new game on enter if the game has ended
         if(JSON.parse(localStorage.getItem('sessionInfo')).gameEnd){
             await newGame();
         }
-    }else if (e.key=="Escape"){
+    }else if (e.key=="Escape"){//new game if user hits escape key
         await newGame();
     }
     
