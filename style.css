@@ -191,7 +191,21 @@ header h1{
     margin: 2px;
 }
 
+.gameboard-letter-revealed{
+    color: rgb(230,0,0);
+    animation: fadein 5s;
+    font-weight: 600;
+}
 
+@keyframes fadein{
+    from {
+        opacity:0;
+    
+    }
+    to {
+        opacity:1;
+    }
+}
 
 
 .game-controls{

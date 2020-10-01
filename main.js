@@ -243,6 +243,21 @@ async function checkLetter(e){
             await showLosingAnimation();
             sessionInfo.gameEnd=true;
             localStorage.setItem('sessionInfo',JSON.stringify(sessionInfo));
+
+            //reveal answer after a delay
+            setTimeout(async ()=>{
+                sentenceAnswer.forEach((letterAnswer,i)=>{
+                    if (lettersEl[i].classList.contains('gameboard-letter-unknown')){
+                        lettersEl[i].innerText=letterAnswer;
+                        lettersEl[i].classList.remove('gameboard-letter-unknown');
+                        lettersEl[i].classList.add('gameboard-letter-revealed');
+                    }
+                });
+            },100);
+            
+
+            return;
+
         }
     }
 
