@@ -62,12 +62,13 @@ async function setGame(){
         letters.append(newletter);
     }
 
+    
     //populate categories if not populated yet
     const categoriesEl = document.querySelector('#categories');
     if (!categoriesEl.querySelector('option')){
         categories.forEach(cat=>{
             let option = document.createElement('option');
-            option.innerText= decodeURI( cat.leftJustify(20).replaceAll(" ", "%C2%A0"));//center text
+            option.innerText= decodeURI( cat.leftJustify(20).replace(/ /g, "%C2%A0"));//center text
             categoriesEl.append(option);
         });
         //document.querySelector('#categories').append("random");//add random option later
@@ -75,7 +76,8 @@ async function setGame(){
     
     //get selected category
     const category = categoriesEl.options[categoriesEl.selectedIndex].text.trim()
-    .replaceAll(String.fromCharCode(160)," ");//note below:
+    .split(String.fromCharCode(160)).join(" ");//(replaceAll not supported yet by some browsers)
+    //note:
     /*special character was used to center text with space that HTML recognizes.
     need to replace spcial white space with standard space char
     */
@@ -83,7 +85,7 @@ async function setGame(){
     //populate difficulties
     const difficulties = document.querySelector('#difficulty');
     const difficultyOptions=["I refuse to try","challenging","I live dangerously"]
-    .map(d=>decodeURI( d.leftJustify(20).replaceAll(" ", "%C2%A0")));//center text
+    .map(d=>decodeURI( d.leftJustify(20).replace(/ /g, "%C2%A0")));//center text
     if (!difficulties.querySelector('option')){
         difficultyOptions.forEach(diff=>{
             let difficulty = document.createElement('option');
@@ -272,7 +274,7 @@ async function newGame(){
 async function showLosingAnimation(t=2000){
     img.src=img(8);
     await setTimeout(()=>{
-        i=Math.ceil(Math.random()*7);
+        i=Math.ceil(Math.random()*8);
         imgEl.src=`img/Lose${i}.gif`;
     },t);
 
