@@ -8,4 +8,10 @@ The data used in this game was extracted from various websites using nodeJS/pupp
 The live demo can be viewed [here](https://jaredmt.github.io/Hangman/).
 
 ## Run game locally
-To run locally after cloning this project, set up a server. Otherwise the game cannot fetch the data.
+To run locally:
+Step 1:
+```
+	git clone https://github.com/jaredmt/Hangman .
+	npm install
+```
+Step 2: Open index.html in VS Code -> Right click -> Open With Live Server
